@@ -1,0 +1,30 @@
+<h1 class="mb-5">Pontos</h1>
+
+<div class="alert alert-primary" role="alert">
+  <strong>Olá</strong> <%= current_user.username %>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>data</th>
+      <th>pontos</th>
+      <th>validade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td scope="row">12/09/2022</td>
+      <td>14</td>
+      <td>12/09/2023</td>
+    </tr>
+    <tr>
+      <td scope="row">12/09/2022</td>
+      <td>14</td>
+      <td>12/09/2023</td>
+    </tr>
+  </tbody>
+</table>
+
+<%= link_to 'sair', logout_path, class: 'btn btn-primary' %>
+
