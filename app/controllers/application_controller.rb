@@ -16,9 +16,9 @@ class ApplicationController < ActionController::Base
 
     data = {
       grant_type: 'authorization_code',
-      client_id: ENV.fetch('COGNITO_CLIENT_ID'),
+      client_id: client_id,
       code: code,
-      redirect_uri: ENV.fetch('COGNITO_URL_CALLBACK')
+      redirect_uri: CGI.escape(oauth_callback_url)
     }
 
     resp = HTTP
