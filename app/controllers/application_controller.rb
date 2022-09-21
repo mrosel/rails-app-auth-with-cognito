@@ -18,18 +18,14 @@ class ApplicationController < ActionController::Base
       grant_type: 'authorization_code',
       client_id: client_id,
       code: code,
-      redirect_uri: CGI.escape(oauth_callback_url)
+      redirect_uri: oauth_callback_url
     }
 
     resp = HTTP
       .basic_auth(:user => client_id, :pass => secret_id)
       .post("#{cognito_url}/oauth2/token", form: data)
 
-    unless resp.status.success?
-      logger.info resp.request.headers.inspect
-      logger.info resp.request.body.to_json
-      return clean_auth_session_and_redirect_to_root(resp.to_s)
-    end
+    return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
 
     token_info = resp.parse
 
