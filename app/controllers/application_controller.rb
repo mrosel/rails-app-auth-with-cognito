@@ -26,8 +26,8 @@ class ApplicationController < ActionController::Base
       .post("#{cognito_url}/oauth2/token", form: data)
 
     unless resp.status.success?
-      logger.debug resp.request.headers.inspect
-      logger.debug resp.request.body.to_json
+      logger.info resp.request.headers.inspect
+      logger.info resp.request.body.to_json
       return clean_auth_session_and_redirect_to_root(resp.to_s)
     end
 
