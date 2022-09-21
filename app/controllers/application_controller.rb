@@ -25,7 +25,10 @@ class ApplicationController < ActionController::Base
       .basic_auth(:user => client_id, :pass => secret_id)
       .post("#{cognito_url}/oauth2/token", form: data)
 
-    return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
+    unless resp.status.success?
+      puts resp.request.inspect
+      return clean_auth_session_and_redirect_to_root(resp.to_s)
+    end
 
     token_info = resp.parse
 
@@ -33,7 +36,10 @@ class ApplicationController < ActionController::Base
       .auth("Bearer #{token_info['access_token']}")
       .get("#{cognito_url}/oauth2/userInfo")
 
-    return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
+    unless resp.status.success?
+      puts resp.request.inspect
+      return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
+    end
 
     user_info = resp.parse
 
