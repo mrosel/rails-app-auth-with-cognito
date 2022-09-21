@@ -1,24 +1,23 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Simple example of login with cognito in the rails application
 
-Things you may want to cover:
+Dependencies:
+  - Ruby 3.1.2
+  - Sqlite
 
-* Ruby version
+Run:
 
-* System dependencies
+```sh
+https://github.com/WallasFaria/rails-app-auth-with-cognito.git
 
-* Configuration
+cd rails-app-auth-with-cognito
 
-* Database creation
+cp .env.template .env
+# edit the cognito infos in .env
 
-* Database initialization
+bundle install --without production
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+rails db:migrate
+rails server
+```
