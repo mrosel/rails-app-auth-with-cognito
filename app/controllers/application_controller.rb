@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
       .basic_auth(:user => client_id, :pass => secret_id)
       .post("#{cognito_url}/oauth2/token", form: data)
 
-    return clean_auth_session_and_redirect_to_root unless resp.status.success?
+    return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
 
     token_info = resp.parse
 
@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
       .auth("Bearer #{token_info['access_token']}")
       .get("#{cognito_url}/oauth2/userInfo")
 
-    return clean_auth_session_and_redirect_to_root unless resp.status.success?
+    return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
 
     user_info = resp.parse
 
@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
 
     session[:current_user_id] = user.id
 
-    redirect_to points_path
+    redirect_to points_path, notice: 'Login realizado com sucesso!'
   end
 
   def logout
@@ -55,9 +55,9 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def clean_auth_session_and_redirect_to_root
+  def clean_auth_session_and_redirect_to_root(notice = nil)
     session.clear
-    redirect_to root_path
+    redirect_to root_path, notice: notice
   end
 
   def cognito_login_url
