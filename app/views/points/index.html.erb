@@ -4,6 +4,10 @@
   <strong>Olá</strong> <%= current_user.username %>
 </div>
 
+<pre class="jumbotron p-4">
+<%= JSON.pretty_generate(JSON.parse(current_user.token_info)) %>
+</pre>
+
 <table class="table">
   <thead>
     <tr>
@@ -26,5 +30,6 @@
   </tbody>
 </table>
 
+<%= link_to 'home', root_path, class: 'btn btn-secondary' %>
 <%= link_to 'sair', logout_path, class: 'btn btn-primary' %>
 
