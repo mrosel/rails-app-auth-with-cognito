@@ -46,6 +46,7 @@ class ApplicationController < ActionController::Base
   end
 
   def logout
+    current_user&.update(token_info: nil)
     session.clear
     callback_url = CGI.escape(root_url)
 
