@@ -1,4 +1,4 @@
-# README
+# Rails app with cognito auth
 
 Simple example of login with cognito in the rails application
 
