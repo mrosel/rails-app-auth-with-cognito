@@ -26,7 +26,8 @@ class ApplicationController < ActionController::Base
       .post("#{cognito_url}/oauth2/token", form: data)
 
     unless resp.status.success?
-      puts resp.request.inspect
+      puts resp.request.headers
+      puts resp.request.body
       return clean_auth_session_and_redirect_to_root(resp.to_s)
     end
 
@@ -36,10 +37,7 @@ class ApplicationController < ActionController::Base
       .auth("Bearer #{token_info['access_token']}")
       .get("#{cognito_url}/oauth2/userInfo")
 
-    unless resp.status.success?
-      puts resp.request.inspect
-      return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
-    end
+    return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
 
     user_info = resp.parse
 
