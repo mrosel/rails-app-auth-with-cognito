@@ -22,8 +22,8 @@ class ApplicationController < ActionController::Base
     }
 
     resp = HTTP
-      .basic_auth(:user => client_id, :pass => secret_id)
-      .post("#{cognito_url}/oauth2/token", form: data)
+      .basic_auth(user: client_id, pass: secret_id)
+      .post(cognito_url('/oauth2/token'), form: data)
 
     return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
 
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
 
     resp = HTTP
       .auth("Bearer #{token_info['access_token']}")
-      .get("#{cognito_url}/oauth2/userInfo")
+      .get(cognito_url('/oauth2/userInfo'))
 
     return clean_auth_session_and_redirect_to_root(resp.to_s) unless resp.status.success?
 
@@ -48,9 +48,7 @@ class ApplicationController < ActionController::Base
   def logout
     current_user&.update(token_info: nil)
     session.clear
-    callback_url = CGI.escape(root_url)
-
-    redirect_to "#{cognito_url}/logout?client_id=#{client_id}&logout_uri=#{callback_url}", allow_other_host: true
+    redirect_to cognito_logout_url, allow_other_host: true
   end
 
   private
@@ -61,13 +59,23 @@ class ApplicationController < ActionController::Base
   end
 
   def cognito_login_url
-    redirect_uri = CGI.escape(oauth_callback_url)
-
-    "#{cognito_url}/oauth2/authorize?client_id=#{client_id}&response_type=code&scope=#{scope}&redirect_uri=#{redirect_uri}"
+    cognito_url('/oauth2/authorize', {
+      client_id: client_id,
+      response_type: 'code',
+      scope: scope,
+      redirect_uri: oauth_callback_url
+    })
   end
 
-  def cognito_url
-    ENV.fetch('COGNITO_URL')
+  def cognito_logout_url
+    cognito_url('/logout', client_id: client_id, logout_uri: root_url)
+  end
+
+  def cognito_url(path = '/', params = {})
+    path = "/#{path}" unless path.start_with?('/')
+    url = "#{ENV.fetch('COGNITO_URL')}#{path}"
+    url += "?#{params.to_query}" if params.to_query.present?
+    url
   end
 
   def client_id
